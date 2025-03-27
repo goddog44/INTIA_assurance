@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}INTIA Assurance{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind with custom theme
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#4F46E5',
+                    }
+                }
+            }
+        }
+
+        // Detect and set dark/light mode
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <div id="app">
+        {% if user.is_authenticated %}
+            <!-- Navbar -->
+            <nav class="bg-primary dark:bg-gray-800 text-white shadow-md">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <div class="flex items-center">
+                            <span class="font-bold text-xl">INTIA Assurance</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span id="user-branch" class="mr-4">{{ user.branch_display }}</span>
+                            <span id="username-display" class="mr-4">{{ user.username }}</span>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-white text-primary hover:bg-gray-100 px-3 py-1 rounded-md text-sm font-medium">
+                                    Déconnexion
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Sidebar and Content -->
+            <div class="flex h-[calc(100vh-4rem)]">
+                <!-- Sidebar -->
+                <div class="bg-gray-100 dark:bg-gray-800 w-64 p-4 hidden md:block">
+                    <div class="space-y-4">
+                        <a href="{% url 'dashboard' %}" class="block w-full text-left px-4 py-2 rounded-md {% if request.resolver_match.url_name == 'dashboard' %}bg-primary text-white{% else %}text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700{% endif %} transition-colors duration-300">Tableau de bord</a>
+                        <a href="{% url 'client_list' %}" class="block w-full text-left px-4 py-2 rounded-md {% if 'client' in request.resolver_match.url_name %}bg-primary text-white{% else %}text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700{% endif %} transition-colors duration-300">Gestion des clients</a>
+                        <a href="{% url 'insurance_list' %}" class="block w-full text-left px-4 py-2 rounded-md {% if 'insurance' in request.resolver_match.url_name %}bg-primary text-white{% else %}text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700{% endif %} transition-colors duration-300">Gestion des assurances</a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu -->
+                <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg">
+                    <div class="flex justify-around">
+                        <a href="{% url 'dashboard' %}" class="flex-1 text-center px-4 py-2 {% if request.resolver_match.url_name == 'dashboard' %}text-primary{% else %}text-gray-500 dark:text-gray-400{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <span class="text-xs">Tableau</span>
+                        </a>
+                        <a href="{% url 'client-list' %}" class="flex-1 text-center px-4 py-2 {% if 'client' in request.resolver_match.url_name %}text-primary{% else %}text-gray-500 dark:text-gray-400{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <span class="text-xs">Clients</span>
+                        </a>
+                        <a href="{% url 'insurance_list' %}" class="flex-1 text-center px-4 py-2 {% if 'insurance' in request.resolver_match.url_name %}text-primary{% else %}text-gray-500 dark:text-gray-400{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="text-xs">Assurances</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1 overflow-auto p-4 pb-16 md:pb-4">
+                    {% if messages %}
+                        <div class="mb-4">
+                            {% for message in messages %}
+                                <div class="p-4 mb-4 {% if message.tags == 'success' %}bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200{% elif message.tags == 'error' %}bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200{% else %}bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200{% endif %} rounded-lg" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        {% else %}
+            {% block auth_content %}{% endblock %}
+        {% endif %}
+    </div>
+
+    {% block modal %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

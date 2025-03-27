@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - INTIA Assurance{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tableau de bord</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">Clients</h3>
+            <p class="text-3xl font-bold text-primary">{{ client_count }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Total des clients enregistrés</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">Assurances</h3>
+            <p class="text-3xl font-bold text-primary">{{ insurance_count }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Contrats d'assurance actifs</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">Renouvellements</h3>
+            <p class="text-3xl font-bold text-primary">{{ renewal_count }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Contrats à renouveler ce mois</p>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">Activité récente</h3>
+        <div class="space-y-4">
+            {% for activity in recent_activities %}
+            <div class="flex items-start">
+                <div class="{% if activity.type == 'client' %}bg-primary{% elif activity.type == 'insurance' %}bg-secondary{% else %}bg-green-500{% endif %} rounded-full w-8 h-8 flex items-center justify-center text-white font-bold flex-shrink-0">
+                    {{ activity.icon }}
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-900 dark:text-white">{{ activity.message }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ activity.timestamp }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 dark:text-gray-400 text-center py-4">Aucune activité récente</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
