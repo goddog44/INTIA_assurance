@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTIA Assurance - {% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#E2E2F5',
+                    }
+                }
+            },
+            darkMode: 'class'
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="min-h-screen flex flex-col">
+        {% include 'partials/_header.html' %}
+
+        <main class="flex-grow container mx-auto px-4 py-6">
+            {% block content %}{% endblock %}
+        </main>
+
+        {% include 'partials/_footer.html' %}
+    </div>
+
+    {% include 'partials/_modals.html' %}
+    {% include 'partials/_scripts.html' %}
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
