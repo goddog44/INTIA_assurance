@@ -1,43 +1,43 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Branch(models.Model):
-    name = models.CharField(max_length=100)
-    address = models.TextField()
+class Succursale(models.Model):
+    nom = models.CharField(max_length=100)
+    adresse = models.TextField()
     
     def __str__(self):
-        return self.name
+        return self.nom
 
 class Client(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100, verbose_name="Prénom")
+    nom = models.CharField(max_length=100)
     email = models.EmailField()
-    phone = models.CharField(max_length=20)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    telephone = models.CharField(max_length=20, verbose_name="Téléphone")
+    succursale = models.ForeignKey(Succursale, on_delete=models.CASCADE, null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+    class Meta:
+        verbose_name = "Client"
+        verbose_name_plural = "Clients"
 
-class InsuranceType(models.Model):
-    name = models.CharField(max_length=100)
+class TypeAssurance(models.Model):
+    nom = models.CharField(max_length=100)
     description = models.TextField()
     
-    def __str__(self):
-        return self.name
+    class Meta:
+        verbose_name = "Type d'assurance"
+        verbose_name_plural = "Types d'assurance"
 
-class Insurance(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    insurance_type = models.ForeignKey(InsuranceType, on_delete=models.CASCADE)
-    contract_number = models.CharField(max_length=50, unique=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+class Assurance(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name="Client")
+    type = models.ForeignKey(TypeAssurance, on_delete=models.CASCADE, verbose_name="Type d'assurance")
+    numero_contrat = models.CharField(max_length=50, unique=True, verbose_name="Numéro de contrat")
+    date_debut = models.DateField(verbose_name="Date de début")
+    date_fin = models.DateField(verbose_name="Date de fin")
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
-    def __str__(self):
-        return f"{self.insurance_type} - {self.client}"
+    class Meta:
+        verbose_name = "Assurance"
+        verbose_name_plural = "Assurances"

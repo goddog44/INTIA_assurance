@@ -1,54 +1,39 @@
 from django import forms
+from .models import Client, Assurance, Succursale, TypeAssurance
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Client, Insurance, Branch, InsuranceType
 
 class LoginForm(AuthenticationForm):
-    BRANCH_CHOICES = [
+    SUCCURSALE_CHOICES = [
         ('Direction Générale', 'Direction Générale'),
-        ('INTIA-Douala', 'INTIA-Douala'), 
+        ('INTIA-Douala', 'INTIA-Douala'),
         ('INTIA-Yaounde', 'INTIA-Yaounde'),
     ]
     
-    branch = forms.ChoiceField(
-        choices=BRANCH_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'w-full p-2 border rounded text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-        })
+    succursale = forms.ChoiceField(
+        choices=SUCCURSALE_CHOICES,
+        label="Succursale",
+        widget=forms.Select(attrs={'class': 'form-control'})
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({
-            'class': 'w-full p-2 border rounded text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-        })
-        self.fields['password'].widget.attrs.update({
-            'class': 'w-full p-2 border rounded text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-        })
 
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'email', 'phone', 'branch']
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({
-                'class': 'w-full p-2 border rounded text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-            })
+        fields = ['prenom', 'nom', 'email', 'telephone', 'succursale']
+        labels = {
+            'prenom': 'Prénom',
+            'telephone': 'Téléphone'
+        }
 
-class InsuranceForm(forms.ModelForm):
+class AssuranceForm(forms.ModelForm):
     class Meta:
-        model = Insurance
-        fields = ['client', 'insurance_type', 'contract_number', 'start_date', 'end_date', 'amount']
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({
-                'class': 'w-full p-2 border rounded text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-            })
-        
-        # Set date input type
-        self.fields['start_date'].widget.input_type = 'date'
-        self.fields['end_date'].widget.input_type = 'date'
+        model = Assurance
+        fields = ['client', 'type', 'numero_contrat', 'date_debut', 'date_fin', 'montant']
+        labels = {
+            'numero_contrat': 'Numéro de contrat',
+            'date_debut': 'Date de début',
+            'date_fin': 'Date de fin'
+        }
+        widgets = {
+            'date_debut': forms.DateInput(attrs={'type': 'date'}),
+            'date_fin': forms.DateInput(attrs={'type': 'date'}),
+        }

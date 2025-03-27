@@ -1,23 +1,48 @@
 from django.urls import path
 from assurance import views
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('', views.dashboard, name='dashboard'),
+    # Authentification
+    path('connexion/', views.login_view, name='login'),
+    path('deconnexion/', views.logout_view, name='logout'),
     
-    # Clients URLs
-    path('clients/', views.clients, name='clients'),
-    path('clients/new/', views.client_create, name='client_create'),
-    path('clients/<int:pk>/', views.client_detail, name='client_detail'),
-    path('clients/<int:pk>/delete/', views.client_delete, name='client_delete'),
+    # Tableau de bord
+    path('', login_required(views.tableau_de_bord), name='tableau_de_bord'),
     
-    # Insurances URLs
-    path('insurances/', views.insurances, name='insurances'),
-    path('insurances/new/', views.insurance_create, name='insurance_create'),
-    path('insurances/<int:pk>/', views.insurance_detail, name='insurance_detail'),
-    path('insurances/<int:pk>/delete/', views.insurance_delete, name='insurance_delete'),
+    # Clients
+    path('clients/', 
+         login_required(views.liste_clients), 
+         name='liste_clients'),
+    path('clients/nouveau/', 
+         login_required(views.creer_client), 
+         name='creer_client'),
+    path('clients/<int:pk>/', 
+         login_required(views.detail_client), 
+         name='detail_client'),
+    path('clients/<int:pk>/modifier/', 
+         login_required(views.modifier_client), 
+         name='modifier_client'),
+    path('clients/<int:pk>/supprimer/', 
+         login_required(views.supprimer_client), 
+         name='supprimer_client'),
     
-    # API endpoint
-    path('api/clients/', views.get_clients_json, name='get_clients_json'),
+    # Assurances
+    path('assurances/', 
+         login_required(views.liste_assurances), 
+         name='liste_assurances'),
+    path('assurances/nouvelle/', 
+         login_required(views.creer_assurance), 
+         name='creer_assurance'),
+    path('assurances/<int:pk>/', 
+         login_required(views.modifier_assurance), 
+         name='modifier_assurance'),
+    path('assurances/<int:pk>/supprimer/', 
+         login_required(views.supprimer_assurance), 
+         name='supprimer_assurance'),
+    
+    # API
+    path('api/clients/', 
+         login_required(views.get_clients_json), 
+         name='get_clients_json'),
 ]
