@@ -1,33 +1,43 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class Succursale(models.Model):
-    nom = models.CharField(max_length=100)
-    adresse = models.TextField()
-    telephone = models.CharField(max_length=20)
-    email = models.EmailField()
-
+class Branch(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.TextField()
+    
     def __str__(self):
-        return self.nom
+        return self.name
 
 class Client(models.Model):
-    succursale = models.ForeignKey(Succursale, on_delete=models.CASCADE)
-    nom = models.CharField(max_length=100)
-    prenom = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     email = models.EmailField()
-    telephone = models.CharField(max_length=20)
-    adresse = models.TextField()
-    date_naissance = models.DateField()
-
+    phone = models.CharField(max_length=20)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return f"{self.prenom} {self.nom}"
+        return f"{self.first_name} {self.last_name}"
 
-class Assurance(models.Model):
+class InsuranceType(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    
+    def __str__(self):
+        return self.name
+
+class Insurance(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    type = models.CharField(max_length=100)
-    numero_police = models.CharField(max_length=50)
-    date_debut = models.DateField()
-    date_fin = models.DateField()
-    montant = models.DecimalField(max_digits=10, decimal_places=2)
-
+    insurance_type = models.ForeignKey(InsuranceType, on_delete=models.CASCADE)
+    contract_number = models.CharField(max_length=50, unique=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return f"{self.type} - {self.client}"
+        return f"{self.insurance_type} - {self.client}"

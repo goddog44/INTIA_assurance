@@ -1,1 +1,0 @@
-# INTIA_assurance

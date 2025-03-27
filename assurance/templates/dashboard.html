@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Onglets -->
+<div class="mb-6 border-b border-gray-300 dark:border-gray-700">
+    <ul class="flex flex-wrap -mb-px">
+        <li class="mr-2">
+            <a href="{% url 'clients' %}" class="tab-btn inline-block py-2 px-4 text-primary font-medium border-b-2 border-primary" data-tab="clients">Clients</a>
+        </li>
+        <li class="mr-2">
+            <a href="{% url 'insurances' %}" class="tab-btn inline-block py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-primary font-medium border-b-2 border-transparent hover:border-primary" data-tab="insurances">Assurances</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Dashboard content -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <h3 class="text-lg font-semibold mb-4">Clients</h3>
+        <p class="text-3xl font-bold">{{ clients_count }}</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <h3 class="text-lg font-semibold mb-4">Assurances actives</h3>
+        <p class="text-3xl font-bold">{{ active_insurances_count }}</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <h3 class="text-lg font-semibold mb-4">Succursale</h3>
+        <p class="text-xl">{{ branch.name }}</p>
+    </div>
+</div>
+{% endblock %}
